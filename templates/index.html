@@ -51,7 +51,8 @@ button:hover {
     margin: 30px auto;
     font-size: 17px;
     white-space: pre-line;
-    width: 65%;
+    max-width: 600px;
+    width: 90%;
     padding: 20px;
     border-radius: 15px;
     background: rgba(255,255,255,0.05);
@@ -69,24 +70,9 @@ button:hover {
     margin-top: 25px;
 }
 
-.bar {
-    width: 8px;
-    height: 25px;
-    background: linear-gradient(180deg, #22c55e, #4ade80);
-    border-radius: 4px;
-    animation: bounce 1.2s infinite ease-in-out;
-}
-
-/* smoother wave timing */
-.bar:nth-child(2) { animation-delay: 0.15s; }
-.bar:nth-child(3) { animation-delay: 0.3s; }
-.bar:nth-child(4) { animation-delay: 0.45s; }
-.bar:nth-child(5) { animation-delay: 0.6s; }
-
-/* smoother motion */
-@keyframes bounce {
-    0%, 100% { height: 20px; }
-    50% { height: 70px; }
+#waveCanvas {
+    width: 100%;
+    height: 120px;
 }
 
 /* Hidden state */
@@ -126,7 +112,7 @@ button:hover {
             <button onclick="setLevel('beginner')">🟢 Beginner</button>
             <button onclick="setLevel('advanced')">🔴 Advanced</button>
         </div>
-
+        <div class="controls" id="levelControls" style="display:none;"></div>
         <!-- Action Buttons -->
         <div class="controls">
             <button onclick="startListening()">🎙️ Speak</button>

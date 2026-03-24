@@ -46,7 +46,7 @@ function startListening() {
         lastUserSpeech = text;
 
         document.getElementById("output").innerText = "You: " + text;
-
+        document.getElementById("output").innerText += "\nAI: Thinking...";
         fetch("/process", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
