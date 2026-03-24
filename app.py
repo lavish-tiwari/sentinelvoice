@@ -37,7 +37,7 @@ def process():
         high_conf_words = ["definitely", "confident", "strong", "clearly"]
 
         if any(word in user_text for word in low_conf_words):
-            feedback = "You sound unsure. Try to be more confident."
+            feedback = "You sound unsure... Try to be more confident."
             score += 1
         elif any(word in user_text for word in high_conf_words):
             feedback = "Great confidence! That was a strong answer."
