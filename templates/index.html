@@ -4,99 +4,132 @@
     <title>SentinelVoice</title>
 
     <style>
-        body {
-            background: #0f172a;
-            color: white;
-            font-family: Arial;
-            text-align: center;
-            padding-top: 50px;
-        }
+body {
+    background: radial-gradient(circle at top, #0f172a, #020617);
+    color: white;
+    font-family: 'Segoe UI', sans-serif;
+    text-align: center;
+    padding-top: 40px;
+}
 
-        h1 {
-            font-size: 40px;
-        }
+/* Title */
+h1 {
+    font-size: 42px;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+}
 
-        #mode {
-            margin: 20px;
-            font-size: 18px;
-            color: #22c55e;
-        }
+/* Mode Display */
+#mode {
+    margin: 15px;
+    font-size: 16px;
+    color: #22c55e;
+    opacity: 0.9;
+}
 
-        button {
-            padding: 15px 25px;
-            font-size: 18px;
-            border-radius: 10px;
-            background: #22c55e;
-            border: none;
-            cursor: pointer;
-            margin: 10px;
-        }
+/* Buttons */
+button {
+    padding: 12px 22px;
+    font-size: 16px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    border: none;
+    cursor: pointer;
+    margin: 8px;
+    color: white;
+    transition: all 0.25s ease;
+    box-shadow: 0 0 10px rgba(34,197,94,0.3);
+}
 
-        #output {
-            margin-top: 30px;
-            font-size: 18px;
-            white-space: pre-line;
-        }
-        
-        .wave-container {
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            height: 80px;
-            gap: 6px;
-            margin-top: 20px;
-        }
+button:hover {
+    transform: scale(1.07);
+    box-shadow: 0 0 18px rgba(34,197,94,0.6);
+}
 
-        .bar {
-            width: 6px;
-            height: 20px;
-            background: #22c55e;
-            animation: bounce 1s infinite ease-in-out;
-        }
+/* Output Box (glass effect) */
+#output {
+    margin: 30px auto;
+    font-size: 17px;
+    white-space: pre-line;
+    width: 65%;
+    padding: 20px;
+    border-radius: 15px;
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.1);
+}
 
-        .bar:nth-child(2) { animation-delay: 0.2s; }
-        .bar:nth-child(3) { animation-delay: 0.4s; }
-        .bar:nth-child(4) { animation-delay: 0.6s; }
-        .bar:nth-child(5) { animation-delay: 0.8s; }
+/* 🌊 Wave Bars (Improved) */
+.wave-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    height: 90px;
+    gap: 8px;
+    margin-top: 25px;
+}
 
-        @keyframes bounce {
-            0%, 100% { height: 20px; }
-            50% { height: 60px; }
-        }
+.bar {
+    width: 8px;
+    height: 25px;
+    background: linear-gradient(180deg, #22c55e, #4ade80);
+    border-radius: 4px;
+    animation: bounce 1.2s infinite ease-in-out;
+}
 
-        .hidden {
-            display: none;
-        }
-    </style>
+/* smoother wave timing */
+.bar:nth-child(2) { animation-delay: 0.15s; }
+.bar:nth-child(3) { animation-delay: 0.3s; }
+.bar:nth-child(4) { animation-delay: 0.45s; }
+.bar:nth-child(5) { animation-delay: 0.6s; }
+
+/* smoother motion */
+@keyframes bounce {
+    0%, 100% { height: 20px; }
+    50% { height: 70px; }
+}
+
+/* Hidden state */
+.hidden {
+    display: none;
+}
+</style>
 </head>
 <body>
 
-    <h1>🎤 SentinelVoice</h1>
+    <div class="app-container">
 
-    <h3 id="mode">Mode: Assistant</h3>
-    <button onclick="setMode('assistant')">🤖 Assistant</button>
-    <button onclick="setMode('interview')">🎯 Interview</button>
-    <button onclick="setLevel('beginner')">🟢 Beginner</button>
-    <button onclick="setLevel('advanced')">🔴 Advanced</button>
-    <button onclick="setMode('security')">🛡️ Security</button>
+        <h1>🎤 SentinelVoice</h1>
 
-    <button onclick="startListening()">🎙️ Speak</button>
-    <button onclick="fakeScam()">🛡️ Test Scam</button>
+        <h3 id="mode">Mode: Assistant</h3>
 
-    <p id="output" style="
-    background:#1e293b;
-    padding:20px;
-    border-radius:10px;
-    width:60%;
-    margin:auto;
-    "></p>
+        <!-- Mode Controls -->
+        <div class="controls">
+            <button onclick="setMode('assistant')">🤖 Assistant</button>
+            <button onclick="setMode('interview')">🎯 Interview</button>
+            <button onclick="setMode('security')">🛡️ Security</button>
+        </div>
 
-    <div id="wave" class="wave-container hidden">
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
+        <!-- Interview Level (only meaningful in interview mode) -->
+        <div class="controls">
+            <button onclick="setLevel('beginner')">🟢 Beginner</button>
+            <button onclick="setLevel('advanced')">🔴 Advanced</button>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="controls">
+            <button onclick="startListening()">🎙️ Speak</button>
+            <button onclick="fakeScam()">🛡️ Test Scam</button>
+        </div>
+
+        <!-- Wave Visual -->
+        <div id="wave-container" class="hidden">
+            <canvas id="waveCanvas"></canvas>
+        </div>
+
+        <!-- Output -->
+        <div id="output"></div>
+
     </div>
 
     <script src="/static/script.js"></script>

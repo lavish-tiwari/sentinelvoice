@@ -3,6 +3,8 @@ from urllib import response
 from flask import Flask, render_template, request, jsonify
 import os
 import requests
+import time
+time.sleep(1)  # Small delay to ensure environment variables are loaded
 
 app = Flask(__name__)
 
@@ -29,20 +31,22 @@ def generate_murf_audio(text):
     url = "https://api.murf.ai/v1/speech/generate"
 
     headers = {
-        "api-key": "ap2_e4ec565b-4562-4502-b1d2-5f28e0da451c",
+        "api-key": os.environ.get("MURF_API_KEY"),
         "Content-Type": "application/json"
     }
 
     payload = {
-        "voiceId": "en-US-natalie",  # you can change voice
+        "voiceId": "en-US-natalie",
         "text": text
     }
 
-    response = requests.post(url, json=payload, headers=headers)
-
-    if response.status_code == 200:
-        return response.json().get("audioFile")
-    else:
+    try:
+        res = requests.post(url, json=payload, headers=headers)
+        if res.status_code == 200:
+            return res.json().get("audioFile")
+        else:
+            return None
+    except:
         return None
 
 @app.route("/")
@@ -78,6 +82,7 @@ def process():
     elif mode == "interview":
 
         questions = beginner_questions if interview_level == "beginner" else advanced_questions
+        total_questions = len(questions)  
 
         if not interview_active:
             current_q = 0
@@ -110,7 +115,13 @@ def process():
             else:
                 final_score = round((score / (total_questions * 3)) * 10, 1)
 
-                response = f"{feedback} Interview completed! Your score is {final_score}/10."
+                response = f"""
+                            {feedback}
+
+                            Interview completed.
+
+                            Your score: {final_score}/10
+                            """
 
                 interview_active = False
                 score = 0
