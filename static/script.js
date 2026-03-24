@@ -1,9 +1,11 @@
+let lastUserSpeech = "";
 function startListening() {
     const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
     recognition.lang = "en-US";
 
     recognition.onresult = function(event) {
         let text = event.results[0][0].transcript;
+        lastUserSpeech = text;
         document.getElementById("output").innerText = "You: " + text;
 
         fetch("/process", {
@@ -35,10 +37,39 @@ function startListening() {
 
 // 🛡️ Scam Demo Button
 function fakeScam() {
-    let msg = "⚠️ Warning: This voice appears AI-generated.";
-    document.getElementById("output").innerText = "AI: " + msg;
+    let output = document.getElementById("output");
     document.getElementById("mode").innerText = "Mode: Security 🛡️";
-    speak(msg);
+
+    if (!lastUserSpeech) {
+        output.innerText = "AI: No voice input detected. Please speak first.";
+        speak("No voice input detected. Please speak first.");
+        return;
+    }
+
+    // Step 1: analyzing
+    output.innerText = "AI: Analyzing your last voice input...";
+    speak("Analyzing your last voice input...");
+
+    setTimeout(() => {
+        // 🔥 simple logic to simulate detection
+        let suspiciousWords = ["urgent", "transfer", "send money", "otp"];
+
+        let isSuspicious = suspiciousWords.some(word =>
+            lastUserSpeech.toLowerCase().includes(word)
+        );
+
+        let msg;
+
+        if (isSuspicious) {
+            msg = "⚠️ Warning: This voice content seems suspicious and potentially fraudulent.";
+        } else {
+            msg = "✅ This voice appears safe and natural.";
+        }
+
+        output.innerText += "\nAI: " + msg;
+        speak(msg);
+
+    }, 2000);
 }
 
 // 🔊 Voice Output
