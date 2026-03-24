@@ -44,6 +44,19 @@ function fakeScam() {
 // 🔊 Voice Output
 function speak(text) {
     let speech = new SpeechSynthesisUtterance(text);
+
     speech.lang = "en-US";
+
+    // 🔥 Voice tuning
+    speech.rate = 0.9;     // slower = more natural
+    speech.pitch = 1;      // normal pitch
+    speech.volume = 1;
+
+    // Try different voices (Chrome only)
+    let voices = window.speechSynthesis.getVoices();
+    if (voices.length > 0) {
+        speech.voice = voices.find(v => v.name.includes("Google")) || voices[0];
+    }
+
     window.speechSynthesis.speak(speech);
 }
