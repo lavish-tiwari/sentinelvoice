@@ -16,6 +16,7 @@ score = 0
 total_questions = len(questions)
 current_q = 0
 interview_active = False
+mode = "assistant"
 
 def generate_murf_audio(text):
     url = "https://api.murf.ai/v1/speech/generate"
@@ -43,61 +44,64 @@ def home():
 
 @app.route("/process", methods=["POST"])
 def process():
-    global current_q, score, interview_active
+    global current_q, score, interview_active, mode
 
     data = request.json
     user_text = data.get("text", "").lower()
 
+    mode = data.get("mode", "assistant")
+
     response = ""
 
-    if "start interview" in user_text:
-        current_q = 0
-        score = 0
-        interview_active = True
-        response = questions[current_q]
+    if mode == "assistant":
+        response = "How can I assist you?"
 
-    elif interview_active and current_q < len(questions):
+    elif mode == "interview":
 
-        low_conf_words = ["umm", "maybe", "i think", "not sure"]
-        high_conf_words = ["definitely", "confident", "strong", "clearly"]
-
-        if any(word in user_text for word in low_conf_words):
-            feedback = "You seem a little unsure there... maybe try expressing it with more confidence."
-            score += 1
-        elif any(word in user_text for word in high_conf_words):
-            feedback = "That was actually a strong answer. You sounded confident and clear."
-            score += 3
-        elif len(user_text.split()) < 5:
-            feedback = "That felt a bit short... maybe expand a little more on your thoughts."
-            score += 1
-        else:
-            feedback = "Good answer. Clear and structured."
-            score += 2
-
-        current_q += 1
-
-        if current_q < len(questions):
-            response = f"{feedback} Next question: {questions[current_q]}"
-        else:
-            final_score = round((score / (total_questions * 3)) * 10, 1)
-
-            if final_score >= 8:
-                summary = "Excellent performance! You're interview ready."
-            elif final_score >= 5:
-                summary = "Good attempt, but needs improvement."
-            else:
-                summary = "You need more practice. Focus on confidence and clarity."
-
-            response = f"{feedback} Interview completed! Your score is {final_score}/10. {summary}"
-
+        if not interview_active:
+            current_q = 0
             score = 0
-            interview_active = False
+            interview_active = True
+            response = questions[current_q]
 
-    elif "check voice" in user_text:
-        response = "⚠️ Warning. This voice may be AI-generated."
+        elif current_q < len(questions):
 
-    else:
-        response = "I'm here to assist you. Say 'start interview' to begin."
+            low_conf_words = ["umm", "maybe", "i think", "not sure"]
+            high_conf_words = ["definitely", "confident", "strong", "clearly"]
+
+            if any(word in user_text for word in low_conf_words):
+                feedback = "You seem a little unsure there... maybe try expressing it with more confidence."
+                score += 1
+            elif any(word in user_text for word in high_conf_words):
+                feedback = "That was actually a strong answer. You sounded confident and clear."
+                score += 3
+            elif len(user_text.split()) < 5:
+                feedback = "That felt a bit short... maybe expand a little more."
+                score += 1
+            else:
+                feedback = "Good answer. Clear and structured."
+                score += 2
+
+            current_q += 1
+
+            if current_q < len(questions):
+                response = f"{feedback} Next question: {questions[current_q]}"
+            else:
+                final_score = round((score / (total_questions * 3)) * 10, 1)
+
+                response = f"{feedback} Interview completed! Your score is {final_score}/10."
+
+                interview_active = False
+                score = 0
+
+    elif mode == "security":
+    
+        suspicious_words = ["urgent", "transfer", "send money", "otp"]
+
+        if any(word in user_text for word in suspicious_words):
+            response = "Hmm... something about that sounded a bit suspicious. I’d recommend being cautious."
+        else:
+            response = "That sounded natural to me. I don’t detect anything concerning."
 
     audio_url = generate_murf_audio(response)
 

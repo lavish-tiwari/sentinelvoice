@@ -1,4 +1,5 @@
 let lastUserSpeech = "";
+let currentMode = "assistant";
 function startListening() {
     const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
     recognition.lang = "en-US";
@@ -11,7 +12,10 @@ function startListening() {
         fetch("/process", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({ text: text })
+            body: JSON.stringify({
+            text: text,
+            mode: currentMode
+        })
         })
         .then(res => res.json())
         .then(data => {
@@ -84,6 +88,12 @@ function speak(text) {
 
     let voices = window.speechSynthesis.getVoices();
 
+function setMode(mode) {
+    currentMode = mode;
+
+    document.getElementById("mode").innerText =
+        "Mode: " + mode.toUpperCase();
+}
     // Try more natural voices
     let preferred = voices.find(v => 
         v.name.includes("Google US English") ||
