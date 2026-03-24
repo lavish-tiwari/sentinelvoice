@@ -14,7 +14,17 @@ function startListening() {
         .then(res => res.json())
         .then(data => {
             let reply = data.response;
+
             document.getElementById("output").innerText += "\nAI: " + reply;
+
+            // 🔥 Mode detection
+            if (text.toLowerCase().includes("start interview")) {
+                document.getElementById("mode").innerText = "Mode: Interview 🎯";
+            } else if (text.toLowerCase().includes("check voice")) {
+                document.getElementById("mode").innerText = "Mode: Security 🛡️";
+            } else {
+                document.getElementById("mode").innerText = "Mode: Assistant 🤖";
+            }
 
             speak(reply);
         });
@@ -23,14 +33,17 @@ function startListening() {
     recognition.start();
 }
 
+// 🛡️ Scam Demo Button
+function fakeScam() {
+    let msg = "⚠️ Warning: This voice appears AI-generated.";
+    document.getElementById("output").innerText = "AI: " + msg;
+    document.getElementById("mode").innerText = "Mode: Security 🛡️";
+    speak(msg);
+}
+
+// 🔊 Voice Output
 function speak(text) {
     let speech = new SpeechSynthesisUtterance(text);
     speech.lang = "en-US";
     window.speechSynthesis.speak(speech);
-}
-
-function fakeScam() {
-    let msg = "⚠️ Warning: This voice appears AI-generated.";
-    document.getElementById("output").innerText = msg;
-    speak(msg);
 }

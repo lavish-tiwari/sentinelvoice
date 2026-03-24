@@ -2,35 +2,55 @@
 <html>
 <head>
     <title>SentinelVoice</title>
+
+    <style>
+        body {
+            background: #0f172a;
+            color: white;
+            font-family: Arial;
+            text-align: center;
+            padding-top: 50px;
+        }
+
+        h1 {
+            font-size: 40px;
+        }
+
+        #mode {
+            margin: 20px;
+            font-size: 18px;
+            color: #22c55e;
+        }
+
+        button {
+            padding: 15px 25px;
+            font-size: 18px;
+            border-radius: 10px;
+            background: #22c55e;
+            border: none;
+            cursor: pointer;
+            margin: 10px;
+        }
+
+        #output {
+            margin-top: 30px;
+            font-size: 18px;
+            white-space: pre-line;
+        }
+    </style>
 </head>
 <body>
-    <h1>🎤 SentinelVoice</h1>
 
-    <button onclick="startListening()">Start Speaking</button>
+    <h1>🎤 SentinelVoice</h1>
 
     <h3 id="mode">Mode: Assistant</h3>
 
-    <button onclick="fakeScam()">Test Scam Detection</button>
+    <button onclick="startListening()">🎙️ Speak</button>
+    <button onclick="fakeScam()">🛡️ Test Scam</button>
+
     <p id="output"></p>
 
     <script src="/static/script.js"></script>
+
 </body>
 </html>
-
-<style>
-body {
-    background: #0f172a;
-    color: white;
-    font-family: Arial;
-    text-align: center;
-    padding-top: 50px;
-}
-button {
-    padding: 15px 25px;
-    font-size: 18px;
-    border-radius: 10px;
-    background: #22c55e;
-    border: none;
-    cursor: pointer;
-}
-</style>
