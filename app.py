@@ -6,17 +6,24 @@ import requests
 
 app = Flask(__name__)
 
-questions = [
+beginner_questions = [
     "Tell me about yourself.",
     "What are your strengths?",
     "Why should we hire you?"
 ]
 
+advanced_questions = [
+    "Explain a challenging project you worked on and how you handled it.",
+    "Describe a situation where you failed and what you learned.",
+    "How do you handle pressure and tight deadlines?"
+]
+
 score = 0
-total_questions = len(questions)
+total_questions = len(beginner_questions)  # Initialize with beginner questions count
 current_q = 0
 interview_active = False
 mode = "assistant"
+interview_level = "beginner"
 
 def generate_murf_audio(text):
     url = "https://api.murf.ai/v1/speech/generate"
@@ -44,19 +51,33 @@ def home():
 
 @app.route("/process", methods=["POST"])
 def process():
-    global current_q, score, interview_active, mode
+    global current_q, score, interview_active, mode, interview_level 
 
     data = request.json
     user_text = data.get("text", "").lower()
 
     mode = data.get("mode", "assistant")
+    interview_level = data.get("level", "beginner")
 
     response = ""
 
     if mode == "assistant":
-        response = "How can I assist you?"
+
+        if "how" in user_text or "use" in user_text:
+            response = "You can switch between modes using the buttons. Try Interview mode to practice or Security mode to analyze voice input."
+
+        elif "interview" in user_text:
+            response = "Interview mode lets you practice real questions. You can choose beginner or advanced level."
+
+        elif "security" in user_text:
+            response = "Security mode analyzes your speech for potentially suspicious or unsafe content."
+
+        else:
+            response = "I can guide you through interview practice, voice analysis, or general assistance. What would you like to try?"
 
     elif mode == "interview":
+
+        questions = beginner_questions if interview_level == "beginner" else advanced_questions
 
         if not interview_active:
             current_q = 0

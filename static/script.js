@@ -1,5 +1,6 @@
 let lastUserSpeech = "";
 let currentMode = "assistant";
+let interviewLevel = "beginner";
 function startListening() {
     const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
     recognition.lang = "en-US";
@@ -12,9 +13,10 @@ function startListening() {
         fetch("/process", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({
+           body: JSON.stringify({
             text: text,
-            mode: currentMode
+            mode: currentMode,
+            level: interviewLevel
         })
         })
         .then(res => res.json())
@@ -97,10 +99,21 @@ function setMode(mode) {
 
     document.getElementById("mode").innerText =
         "Mode: " + mode.toUpperCase();
+
+    let bars = document.querySelectorAll(".bar");
+
+    let color = "#22c55e"; // default green
+
+    if (mode === "interview") wave.style.background = "#ef4444"; // red
+    if (mode === "security") wave.style.background = "#facc15"; // yellow
+    if (mode === "assistant") wave.style.background = "#22c55e"; // green
+    bars.forEach(bar => bar.style.background = color);
+}
+function setLevel(level) {
+    interviewLevel = level;
+    document.getElementById("mode").innerText =
+        "Mode: Interview (" + level.toUpperCase() + ")";
 }
 
 let wave = document.getElementById("wave");
 
-if (currentMode === "interview") wave.style.background = "#ef4444"; // red
-if (currentMode === "security") wave.style.background = "#facc15"; // yellow
-if (currentMode === "assistant") wave.style.background = "#22c55e"; // green
