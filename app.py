@@ -19,7 +19,7 @@ def home():
 
 @app.route("/process", methods=["POST"])
 def process():
-    global current_q
+    global current_q,score
     data = request.json
     user_text = data.get("text", "").lower()
 
@@ -27,6 +27,7 @@ def process():
 
     if "start interview" in user_text:
         current_q = 0
+        score = 0
         response = questions[current_q]
 
     elif current_q < len(questions):
@@ -65,7 +66,7 @@ def process():
             response = f"{feedback} Interview completed! Your score is {final_score}/10. {summary}"
 
             score = 0  # reset for next interview
-            
+
     elif "check voice" in user_text:
         response = "⚠️ Warning. This voice may be AI-generated."
 
