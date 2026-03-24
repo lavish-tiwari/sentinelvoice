@@ -60,7 +60,7 @@ button:hover {
     border: 1px solid rgba(255,255,255,0.1);
 }
 
-/* 🌊 Wave Bars (Improved) */
+/* 🌊 Wave Canvas */
 .wave-container {
     display: flex;
     justify-content: center;
@@ -70,10 +70,13 @@ button:hover {
     margin-top: 25px;
 }
 
+
 #waveCanvas {
     width: 100%;
     height: 120px;
+    filter: drop-shadow(0 0 8px #22c55e);
 }
+
 
 /* Hidden state */
 .hidden {
@@ -108,11 +111,11 @@ button:hover {
         </div>
 
         <!-- Interview Level (only meaningful in interview mode) -->
-        <div class="controls">
+        <div class="controls" id="levelControls" style="display:none;">
             <button onclick="setLevel('beginner')">🟢 Beginner</button>
             <button onclick="setLevel('advanced')">🔴 Advanced</button>
         </div>
-        <div class="controls" id="levelControls" style="display:none;"></div>
+
         <!-- Action Buttons -->
         <div class="controls">
             <button onclick="startListening()">🎙️ Speak</button>
