@@ -23,15 +23,6 @@ function startListening() {
 
             document.getElementById("output").innerText += "\nAI: " + reply;
 
-            // 🔥 Mode detection
-            if (text.toLowerCase().includes("start interview")) {
-                document.getElementById("mode").innerText = "Mode: Interview 🎯";
-            } else if (text.toLowerCase().includes("check voice")) {
-                document.getElementById("mode").innerText = "Mode: Security 🛡️";
-            } else {
-                document.getElementById("mode").innerText = "Mode: Assistant 🤖";
-            }
-
             speak(reply);
         });
     };
@@ -88,12 +79,7 @@ function speak(text) {
 
     let voices = window.speechSynthesis.getVoices();
 
-function setMode(mode) {
-    currentMode = mode;
 
-    document.getElementById("mode").innerText =
-        "Mode: " + mode.toUpperCase();
-}
     // Try more natural voices
     let preferred = voices.find(v => 
         v.name.includes("Google US English") ||
@@ -104,4 +90,10 @@ function setMode(mode) {
 
     window.speechSynthesis.cancel(); // stop overlap
     window.speechSynthesis.speak(speech);
+}
+function setMode(mode) {
+    currentMode = mode;
+
+    document.getElementById("mode").innerText =
+        "Mode: " + mode.toUpperCase();
 }
