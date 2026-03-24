@@ -37,6 +37,33 @@
             font-size: 18px;
             white-space: pre-line;
         }
+        .wave {
+    width: 100px;
+    height: 100px;
+    margin: 20px auto;
+    border-radius: 50%;
+    background: #22c55e;
+    animation: pulse 1s infinite;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    @keyframes pulse {
+        0% {
+            transform: scale(1);
+            opacity: 0.7;
+        }
+        50% {
+            transform: scale(1.5);
+            opacity: 0.3;
+        }
+        100% {
+            transform: scale(1);
+            opacity: 0.7;
+        }
+    }
     </style>
 </head>
 <body>
@@ -51,7 +78,15 @@
     <button onclick="startListening()">🎙️ Speak</button>
     <button onclick="fakeScam()">🛡️ Test Scam</button>
 
-    <p id="output"></p>
+    <p id="output" style="
+    background:#1e293b;
+    padding:20px;
+    border-radius:10px;
+    width:60%;
+    margin:auto;
+    "></p>
+
+    <div id="wave" class="wave hidden"></div>
 
     <script src="/static/script.js"></script>
 

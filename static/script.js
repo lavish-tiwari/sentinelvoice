@@ -20,13 +20,14 @@ function startListening() {
         .then(res => res.json())
         .then(data => {
             let reply = data.response;
-
+            document.getElementById("wave").classList.add("hidden");
             document.getElementById("output").innerText += "\nAI: " + reply;
 
             speak(reply);
         });
     };
 
+    document.getElementById("wave").classList.remove("hidden");
     recognition.start();
 }
 
@@ -97,3 +98,9 @@ function setMode(mode) {
     document.getElementById("mode").innerText =
         "Mode: " + mode.toUpperCase();
 }
+
+let wave = document.getElementById("wave");
+
+if (currentMode === "interview") wave.style.background = "#ef4444"; // red
+if (currentMode === "security") wave.style.background = "#facc15"; // yellow
+if (currentMode === "assistant") wave.style.background = "#22c55e"; // green
