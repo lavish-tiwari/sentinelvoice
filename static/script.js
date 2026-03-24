@@ -129,7 +129,16 @@ function setMode(mode) {
     document.getElementById("mode").innerText =
         "Mode: " + mode.toUpperCase();
 
-    // 🎨 Change wave color based on mode
+    let levelControls = document.getElementById("levelControls");
+
+    // 🎯 Show only in interview mode
+    if (mode === "interview") {
+        levelControls.style.display = "block";
+    } else {
+        levelControls.style.display = "none";
+    }
+
+    // 🎨 Change wave color
     if (mode === "interview") waveColor = "#ef4444";   // red
     else if (mode === "security") waveColor = "#facc15"; // yellow
     else waveColor = "#22c55e"; // green
