@@ -47,7 +47,7 @@ function fakeScam() {
     }
 
     // Step 1: analyzing
-    output.innerText = "AI: Analyzing your last voice input...";
+    output.innerText = "AI: Let me think for a second...";
     speak("Analyzing your last voice input...");
 
     setTimeout(() => {
@@ -61,9 +61,9 @@ function fakeScam() {
         let msg;
 
         if (isSuspicious) {
-            msg = "⚠️ Warning: This voice content seems suspicious and potentially fraudulent.";
+            msg = "Hmm... something about that sounded a bit suspicious. I’d recommend being cautious.";
         } else {
-            msg = "✅ This voice appears safe and natural.";
+            msg = "That sounded natural to me. I don’t detect anything concerning.";
         }
 
         output.innerText += "\nAI: " + msg;
@@ -78,16 +78,20 @@ function speak(text) {
 
     speech.lang = "en-US";
 
-    // 🔥 Voice tuning
-    speech.rate = 0.9;     // slower = more natural
-    speech.pitch = 1;      // normal pitch
+    speech.rate = 0.85;   // slower = more human
+    speech.pitch = 1;
     speech.volume = 1;
 
-    // Try different voices (Chrome only)
     let voices = window.speechSynthesis.getVoices();
-    if (voices.length > 0) {
-        speech.voice = voices.find(v => v.name.includes("Google")) || voices[0];
-    }
 
+    // Try more natural voices
+    let preferred = voices.find(v => 
+        v.name.includes("Google US English") ||
+        v.name.includes("Female")
+    );
+
+    speech.voice = preferred || voices[0];
+
+    window.speechSynthesis.cancel(); // stop overlap
     window.speechSynthesis.speak(speech);
 }
