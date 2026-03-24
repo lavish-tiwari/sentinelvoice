@@ -1,5 +1,8 @@
+from urllib import response
+
 from flask import Flask, render_template, request, jsonify
 import os
+import requests
 
 app = Flask(__name__)
 
@@ -12,6 +15,26 @@ questions = [
 score = 0
 total_questions = len(questions)
 current_q = 0
+
+def generate_murf_audio(text):
+    url = "https://api.murf.ai/v1/speech/generate"
+
+    headers = {
+        "api-key": "ap2_e4ec565b-4562-4502-b1d2-5f28e0da451c",
+        "Content-Type": "application/json"
+    }
+
+    payload = {
+        "voiceId": "en-US-natalie",  # you can change voice
+        "text": text
+    }
+
+    response = requests.post(url, json=payload, headers=headers)
+
+    if response.status_code == 200:
+        return response.json().get("audioFile")
+    else:
+        return None
 
 @app.route("/")
 def home():
@@ -37,13 +60,13 @@ def process():
         high_conf_words = ["definitely", "confident", "strong", "clearly"]
 
         if any(word in user_text for word in low_conf_words):
-            feedback = "You sound unsure... Try to be more confident."
+            feedback = "You seem a little unsure there... maybe try expressing it with more confidence."
             score += 1
         elif any(word in user_text for word in high_conf_words):
-            feedback = "Great confidence! That was a strong answer."
+            feedback = "That was actually a strong answer. You sounded confident and clear."
             score += 3
         elif len(user_text.split()) < 5:
-            feedback = "Your answer is too short. Try to elaborate more."
+            feedback = "That felt a bit short... maybe expand a little more on your thoughts."
             score += 1
         else:
             feedback = "Good answer. Clear and structured."
@@ -73,7 +96,12 @@ def process():
     else:
         response = "I'm here to assist you. Say 'start interview' to begin."
 
-    return jsonify({"response": response})
+    audio_url = generate_murf_audio(response)
+
+    return jsonify({
+        "response": response,
+        "audio": audio_url
+    })
 
 
 if __name__ == "__main__":
