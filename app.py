@@ -28,10 +28,18 @@ def process():
         response = questions[current_q]
 
     elif current_q < len(questions):
-        if "umm" in user_text or "maybe" in user_text or "i think" in user_text:
-            feedback = "You seem unsure. Try to be more confident."
+        # Improved Emotion Detection
+        low_conf_words = ["umm", "maybe", "i think", "not sure"]
+        high_conf_words = ["definitely", "confident", "strong", "clearly"]
+
+        if any(word in user_text for word in low_conf_words):
+            feedback = "You sound a bit unsure. Try speaking with more confidence."
+        elif any(word in user_text for word in high_conf_words):
+            feedback = "Great confidence! That was a strong answer."
+        elif len(user_text.split()) < 5:
+            feedback = "Your answer is too short. Try to elaborate more."
         else:
-            feedback = "Good answer. Clear and confident."
+            feedback = "Good answer. Clear and structured."
 
         current_q += 1
 

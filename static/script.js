@@ -28,3 +28,9 @@ function speak(text) {
     speech.lang = "en-US";
     window.speechSynthesis.speak(speech);
 }
+
+function fakeScam() {
+    let msg = "⚠️ Warning: This voice appears AI-generated.";
+    document.getElementById("output").innerText = msg;
+    speak(msg);
+}
