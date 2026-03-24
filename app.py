@@ -15,6 +15,7 @@ questions = [
 score = 0
 total_questions = len(questions)
 current_q = 0
+interview_active = False
 
 def generate_murf_audio(text):
     url = "https://api.murf.ai/v1/speech/generate"
@@ -42,7 +43,7 @@ def home():
 
 @app.route("/process", methods=["POST"])
 def process():
-    global current_q, score
+    global current_q, score, interview_active
 
     data = request.json
     user_text = data.get("text", "").lower()
@@ -52,9 +53,10 @@ def process():
     if "start interview" in user_text:
         current_q = 0
         score = 0
+        interview_active = True
         response = questions[current_q]
 
-    elif current_q < len(questions):
+    elif interview_active and current_q < len(questions):
 
         low_conf_words = ["umm", "maybe", "i think", "not sure"]
         high_conf_words = ["definitely", "confident", "strong", "clearly"]
@@ -89,6 +91,7 @@ def process():
             response = f"{feedback} Interview completed! Your score is {final_score}/10. {summary}"
 
             score = 0
+            interview_active = False
 
     elif "check voice" in user_text:
         response = "⚠️ Warning. This voice may be AI-generated."
