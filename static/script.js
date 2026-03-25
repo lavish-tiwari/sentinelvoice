@@ -2,6 +2,7 @@ let lastUserSpeech = "";
 let currentMode = "assistant";
 let interviewLevel = "beginner";
 
+// 🌊 Canvas Setup
 let canvas = document.getElementById("waveCanvas");
 let ctx = canvas.getContext("2d");
 
@@ -11,7 +12,7 @@ canvas.height = 150;
 let amplitude = 10;
 let waveColor = "#22c55e";
 
-// 🌊 Draw Siri-like wave
+// 🌊 Wave Animation
 function drawWave() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -32,12 +33,11 @@ function drawWave() {
 
 drawWave();
 
-// 🎤 Start listening
+// 🎤 START LISTENING
 function startListening() {
     const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
     recognition.lang = "en-US";
 
-    // show wave + increase amplitude
     document.getElementById("wave-container").classList.remove("hidden");
     amplitude = 40;
 
@@ -45,8 +45,10 @@ function startListening() {
         let text = event.results[0][0].transcript;
         lastUserSpeech = text;
 
-        document.getElementById("output").innerText = "You: " + text;
-        document.getElementById("output").innerText += "\nAI: Thinking...";
+        let output = document.getElementById("output");
+
+        output.innerText = "You: " + text + "\nAI: Thinking...";
+
         fetch("/process", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
@@ -60,11 +62,16 @@ function startListening() {
         .then(data => {
             let reply = data.response;
 
-            document.getElementById("output").innerText += "\nAI: " + reply;
+            output.innerText = "You: " + text + "\nAI: " + reply;
 
-            speak(reply);
+            // 🎧 Murf audio (PRIMARY)
+            if (data.audio) {
+                let audio = new Audio(data.audio);
+                audio.play();
+            } else {
+                speak(reply); // fallback
+            }
 
-            // reduce wave after speaking
             amplitude = 10;
             document.getElementById("wave-container").classList.add("hidden");
         });
@@ -73,18 +80,18 @@ function startListening() {
     recognition.start();
 }
 
-// 🛡️ Scam Detection
+// 🛡️ SECURITY CHECK
 function fakeScam() {
     let output = document.getElementById("output");
 
     if (!lastUserSpeech) {
-        output.innerText = "AI: No voice input detected. Please speak first.";
-        speak("No voice input detected. Please speak first.");
+        output.innerText = "AI: No voice input detected.";
+        speak("No voice input detected.");
         return;
     }
 
-    output.innerText = "AI: Let me think for a second...";
-    speak("Let me think for a second");
+    output.innerText = "AI: Analyzing...";
+    speak("Analyzing your speech");
 
     setTimeout(() => {
         let suspiciousWords = ["urgent", "transfer", "send money", "otp"];
@@ -94,35 +101,29 @@ function fakeScam() {
         );
 
         let msg = isSuspicious
-            ? "Hmm... something about that sounded suspicious. I’d be cautious."
-            : "That sounded natural to me. Nothing concerning.";
+            ? "This sounds suspicious. Please be cautious."
+            : "This seems safe. No concerns detected.";
 
         output.innerText += "\nAI: " + msg;
         speak(msg);
     }, 2000);
 }
 
-// 🔊 Voice Output
+// 🔊 FALLBACK VOICE
 function speak(text) {
     let speech = new SpeechSynthesisUtterance(text);
 
     speech.lang = "en-US";
     speech.rate = 0.85;
-    speech.pitch = 1;
 
     let voices = window.speechSynthesis.getVoices();
-
-    let preferred = voices.find(v =>
-        v.name.includes("Google") || v.name.includes("Female")
-    );
-
-    speech.voice = preferred || voices[0];
+    speech.voice = voices.find(v => v.name.includes("Google")) || voices[0];
 
     window.speechSynthesis.cancel();
     window.speechSynthesis.speak(speech);
 }
 
-// 🎯 Mode switch
+// 🎯 MODE SWITCH
 function setMode(mode) {
     currentMode = mode;
 
@@ -131,20 +132,19 @@ function setMode(mode) {
 
     let levelControls = document.getElementById("levelControls");
 
-    // 🎯 Show only in interview mode
     if (mode === "interview") {
         levelControls.style.display = "block";
     } else {
         levelControls.style.display = "none";
     }
 
-    // 🎨 Change wave color
-    if (mode === "interview") waveColor = "#ef4444";   // red
-    else if (mode === "security") waveColor = "#facc15"; // yellow
-    else waveColor = "#22c55e"; // green
+    // 🎨 Wave color change
+    if (mode === "interview") waveColor = "#ef4444";
+    else if (mode === "security") waveColor = "#facc15";
+    else waveColor = "#22c55e";
 }
 
-// 🎯 Interview level
+// 🎯 INTERVIEW LEVEL
 function setLevel(level) {
     interviewLevel = level;
 
